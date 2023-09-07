@@ -11,6 +11,7 @@ class Posts extends Component
     public $posts, $title, $body, $post_id;
     public $updateMode = false;
 
+
     protected $listeners = ['remove'];
    
     /**
@@ -21,6 +22,8 @@ class Posts extends Component
     public function render()
     {
         $this->posts = Post::all();
+       
+
         // dd($this->posts);
         return view('livewire.posts');
     }
@@ -30,7 +33,7 @@ class Posts extends Component
      *
      * @var array
      */
-    private function resetInputFields(){
+    public function resetInputFields(){
         $this->title = '';
         $this->body = '';
     }
@@ -55,9 +58,10 @@ class Posts extends Component
   
        // session()->flash('message', 'Post Created Successfully.');
   
+        $this->dispatchBrowserEvent('closeModal');
         $this->resetInputFields();
         $this->alertSuccess();
-    }
+      }
   
     /**
      * The attributes that are mass assignable.
@@ -106,6 +110,7 @@ class Posts extends Component
         $this->updateMode = false;
   
        // session()->flash('message', 'Post Updated Successfully.');
+        $this->dispatchBrowserEvent('closeModal');
         $this->resetInputFields();
         $this->alertSuccess();
     }
@@ -130,6 +135,7 @@ class Posts extends Component
      */
     public function alertSuccess()
     {
+        
         $this->dispatchBrowserEvent('swal:modal', [
                 'type' => 'success',  
                 'message' => 'Welldone! Created Successfully!', 

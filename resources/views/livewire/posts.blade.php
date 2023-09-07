@@ -5,12 +5,10 @@
             {{ session('message') }}
         </div>
     @endif
+    
   
-    @if($updateMode)
-        @include('livewire.update')
-    @else
         @include('livewire.create')
-    @endif
+   
   
     <table class="table table-bordered mt-5">
         <thead>
@@ -32,7 +30,8 @@
                 <td>{{ $post->created_at }}</td>
                 <td>{{ $post->updated_at }}</td>
                 <td>
-                <button wire:click="edit({{ $post->id }})" class="btn btn-primary btn-sm">Edit</button>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" wire:click="edit({{ $post->id }})">Edit</button>
+                <!-- <button wire:click="edit({{ $post->id }})" class="btn btn-primary btn-sm">Edit</button> -->
                     <button wire:click="alertConfirm({{ $post->id }})" class="btn btn-danger btn-sm">Delete</button>
                 </td>
             </tr>
@@ -43,6 +42,12 @@
 
 
 <script>
+
+window.addEventListener('closeModal', event => {
+            document.querySelector('#exampleModal').style.display = "none";
+            document.querySelector('.modal-backdrop').remove();
+        })
+    
   
 window.addEventListener('swal:modal', event => { 
     Swal.fire({
@@ -70,8 +75,6 @@ window.addEventListener('swal:confirm', event => {
     });
 });
  </script>
-
-
     @endpush
 
 </div>
