@@ -5,7 +5,7 @@
         @error('title') <span class="text-danger">{{ $message }}</span>@enderror
     </div>
     <div class="form-group">
-        <label for="exampleFormControlInput2">Body:</label>
+        <label for="exampleFormControlInput2">Body Title:</label>
         <textarea type="email" class="form-control" id="exampleFormControlInput2" wire:model.defer="body" placeholder="Enter Body"></textarea>
         @error('body') <span class="text-danger">{{ $message }}</span>@enderror
     </div>
