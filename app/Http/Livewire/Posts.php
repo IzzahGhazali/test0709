@@ -4,12 +4,24 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Post;
+use Livewire\WithPagination;
 
 class Posts extends Component
 {
 
-    public $posts, $title, $body, $post_id;
+    use WithPagination;
+    public $title, $body, $post_id, $searchTerm;
+    public $sortColumn = 'created_at';
+    public $sortDirection = 'asc';
     public $updateMode = false;
+
+     protected $paginationTheme = 'bootstrap';
+
+      public function sort($column)
+    {
+        $this->sortColumn = $column;
+        $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
+    }
 
 
     protected $listeners = ['remove'];
@@ -19,13 +31,55 @@ class Posts extends Component
      *
      * @var array
      */
+
+     private function headerConfig()
+    {
+        return [
+            'id' => 'ID',
+            'title' => 'Title',
+            'body' => 'Body',
+            'created_at' => [
+                'label' => 'Created At',
+                'func' => function($value) {
+                    return $value->diffForHumans();
+                }
+            ],
+            'updated_at' => [
+                'label' => 'Updated At',
+                'func' => function($value) {
+                    return $value->diffForHumans();
+                }
+            ],
+             'action' => 'Action',
+        ];
+    }   
+
+     private function resultData()
+    {
+        return Post::where(function ($query) {
+            
+
+            if($this->searchTerm != "") {
+                $query->where('title', 'like', '%'.$this->searchTerm.'%');
+                $query->orWhere('body', 'like', '%'.$this->searchTerm.'%');
+            }
+        })
+        ->orderBy($this->sortColumn, $this->sortDirection)
+        ->paginate(5);
+    }
+
     public function render()
     {
-        $this->posts = Post::all();
+    
        
 
         // dd($this->posts);
-        return view('livewire.posts');
+        return view('livewire.posts',[
+            'posts' => $this->resultData(),
+            'headers' => $this->headerConfig()
+
+    ]);
+
     }
   
     /**
